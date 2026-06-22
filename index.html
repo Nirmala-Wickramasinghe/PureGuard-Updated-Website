@@ -2017,7 +2017,7 @@ document.addEventListener('keydown', (e) => {
 document.getElementById('whatsappOrderForm').addEventListener('submit', function(event) {
   event.preventDefault(); // Prevents the webpage from reloading on submit
 
-  // Your target WhatsApp business number with country code (No spaces, dashes, or + signs)
+  // Your target WhatsApp business number with country code
   const whatsappNumber = "94705388249"; 
 
   // Capture input values safely
@@ -2028,21 +2028,23 @@ document.getElementById('whatsappOrderForm').addEventListener('submit', function
   const qty = document.getElementById('orderQty').value.trim() || "Not Specified";
   const message = document.getElementById('orderMessage').value.trim();
 
-  // Create a beautiful, production-level text template using URI Encoding
-  // %0A represents a clean line break (\n) in URLs
-  const textMessage = `*📦 NEW WHOLESALE INQUIRY - PUREGUARD*` + `%0A` +
-                      `---------------------------------------` + `%0A%0A` +
-                      `👤 *Name/Company:* ${name}` + `%0A` +
-                      `📧 *Email Address:* ${email}` + `%0A` +
-                      `📞 *Phone Number:* ${phone}` + `%0A%0A` +
-                      `🛍️ *Product Line:* ${product}` + `%0A` +
-                      `🔢 *Estimated Qty:* ${qty}` + `%0A%0A` +
-                      `📝 *Requirements/Message:*` + `%0A` + `${message}` + `%0A%0A` +
-                      `---------------------------------------` + `%0A` +
+  // Create the raw text template using standard line breaks (\n)
+  const rawTextMessage = `*📦 NEW WHOLESALE INQUIRY - PUREGUARD*\n` +
+                      `---------------------------------------\n\n` +
+                      `👤 *Name/Company:* ${name}\n` +
+                      `📧 *Email Address:* ${email}\n` +
+                      `📞 *Phone Number:* ${phone}\n\n` +
+                      `🛍️ *Product Line:* ${product}\n` +
+                      `🔢 *Estimated Qty:* ${qty}\n\n` +
+                      `📝 *Requirements/Message:*\n${message}\n\n` +
+                      `---------------------------------------\n` +
                       `_Sent dynamically via PureGuard Web Portal._`;
 
-  // Construct the secure api endpoint URL
-  const whatsappUrl = `https://api.whatsapp.com/send?phone=${whatsappNumber}&text=${textMessage}`;
+  // Safely encode the entire message for a URL
+  const encodedMessage = encodeURIComponent(rawTextMessage);
+
+  // Construct the secure api endpoint URL using the modern wa.me format
+  const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
 
   // Open the built link directly in a secure, isolated new browser tab
   window.open(whatsappUrl, '_blank');
